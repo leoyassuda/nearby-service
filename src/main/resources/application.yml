@@ -1,0 +1,22 @@
+spring:
+  data:
+    mongodb:
+      uri: ENC(rZ1KgLpNnOQLOVPFcd+iO0A5/VBx92RYN2ahNZuIdbMjvvyWzm1PbcMqQTLDPIipGg2UdTUSRh58bATjk3bKq2J4BqqnP/G22EVRuhxBWgz22DGaI3ZR3aahy5xebuwggdD/wsEiQA0=)
+      auto-index-creation: false
+app:
+  gk: ENC(DQTVnmka31c4J2gKhqMcBHI/7VUiDZQZOnRgmyEBq8Z2lOrEK96xSUMAW1VY/TMJ)
+---
+spring:
+  profiles: test
+  data:
+    mongodb:
+      uri: ENC(8qJTAVnoHbiGpXOj8U1MKRFjBPCnk37u2k3UwpDWNhUL7v192JHI0ePh5v+AY1IG5eoEIIWKKqxwFW8csozE+ePT2pTH+hDp4Zi4CI8UScM0sW6+EYBjVfR9oSHcsX2/uzZi0XZYak0=)
+      auto-index-creation: false
+enviroment: test
+app:
+  gk: ENC(NyWdWJ+lDtG/FzKrQz2Ko7HkpY1eWG1FXX5KOUQyn1R6lAA7EoApcngvbFs1M4Sq)
+test:
+  enc: ENC(rxRDm6bK3XbmevrzpFlhSXV5MW87ovjW)
+example:
+  firstProperty: file
+  secondProperty: file
