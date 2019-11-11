@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EncryptService {
 
-    @Value("${test.enc}")
+    @Value("${app.name.enc}")
     private String property;
 
     public String getProperty() {

@@ -20,6 +20,6 @@ public class EncryptTest {
     public void whenDecryptedPasswordNeeded_GetFromService() {
         System.setProperty("jasypt.encryptor.password", "test-enc");
         EncryptService service = appCtx.getBean(EncryptService.class);
-        assertEquals("nearby-enc", service.getProperty());
+        assertEquals("nearby-service", service.getProperty());
     }
 }

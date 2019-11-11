@@ -1,16 +1,24 @@
 package com.lny.nearby.handler;
 
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlacesSearchResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.lny.nearby.document.PlaceRequestDocument;
 import com.lny.nearby.service.PlaceService;
+import com.lny.nearby.util.JsonUtils;
+import com.lny.nearby.validator.PlaceRequestValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * A handler to provide a reactive process across {@link com.lny.nearby.router.PlaceRouter} to the {@link PlaceService}.
@@ -18,13 +26,47 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public class PlaceHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(PlaceHandler.class);
+
     @Autowired
     private PlaceService placeService;
 
-    public Mono<ServerResponse> findPlace(ServerRequest serverRequest) {
-        //TODO: receber param do request e passar para o service.
-        return ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(placeService.findPlace(new LatLng(new Double("-23.5668698"), new Double("-46.6608874")), "starbucks"), PlacesSearchResult.class);
+    private final Validator validator = new PlaceRequestValidator();
+
+    /**
+     * Handler to process a request findPlace API.
+     *
+     * @return a list of places.
+     */
+    public Mono<ServerResponse> findPlace(final ServerRequest serverRequest) {
+        logger.info("Handle request to find places");
+
+        PlaceRequestDocument placeRequestDocument = PlaceRequestDocument.toPlaceRequestDocument(serverRequest.queryParams().toSingleValueMap());
+
+        Errors errors = new BeanPropertyBindingResult(
+                placeRequestDocument,
+                PlaceRequestDocument.class.getName());
+
+        validator.validate(placeRequestDocument, errors);
+
+        if (errors.getAllErrors().isEmpty()) {
+            return this.placeService.findPlace(new Double(placeRequestDocument.getLatitude()),
+                    new Double(placeRequestDocument.getLongitude()), placeRequestDocument.getKeyword(),
+                    placeRequestDocument.getRankedBy())
+                    .collectList()
+                    .flatMap(JsonUtils::write)
+                    .flatMap((json) -> ServerResponse.ok()
+                            .body(Mono.just(json), String.class)
+                    ).onErrorResume(
+                            JsonProcessingException.class,
+                            (e) -> ServerResponse.status(INTERNAL_SERVER_ERROR)
+                                    .body(Mono.just(e.getMessage()), String.class)
+                    );
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    errors.getAllErrors().toString());
+        }
     }
+
 }
