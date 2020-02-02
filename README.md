@@ -49,5 +49,5 @@ mvn spring-boot:run
 
 ## Authors
 
-* **Leo Yassuda** - *Initial work* - [Product-Service](https://bitbucket.org/leo-yassuda/product-service)
+* **Leo Yassuda** - *Initial work* - [Nearby-Service](https://gitlab.com/leoyassuda/nearby-service)
 

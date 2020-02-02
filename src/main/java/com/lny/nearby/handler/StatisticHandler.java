@@ -3,7 +3,6 @@ package com.lny.nearby.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lny.nearby.document.StatisticAggregate;
 import com.lny.nearby.service.StatisticService;
-import com.lny.nearby.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

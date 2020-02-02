@@ -1,8 +1,6 @@
 package com.lny.nearby.validator;
 
-import com.lny.nearby.document.PlaceRequestDocument;
 import com.lny.nearby.document.StatisticRequestDocument;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;

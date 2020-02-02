@@ -1,6 +1,5 @@
 package com.lny.nearby.exception;
 
-import com.lny.nearby.service.PlaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;

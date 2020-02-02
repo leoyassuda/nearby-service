@@ -41,7 +41,8 @@ public class CalculatorUtils {
 
     /**
      * A helper to rounding double values.
-     * @param value a double to rounding.
+     *
+     * @param value  a double to rounding.
      * @param places quantity of numbers to rounding.
      * @return the double rounded.
      */
