@@ -5,7 +5,7 @@ Nearby-Service is a basic API, to find places according position given.
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
-* [Setup](#setup) 
+* [Install](#installing) 
 
 ## General info
 This project is simple api to find places using Google Maps API.
@@ -20,7 +20,7 @@ Project is created with:
 * MongoDB
 * Swagger
 
-### Installing
+## Installing
 
 In the folder where repo was cloned, run the following commands
 
