@@ -47,13 +47,18 @@ public class PlaceService {
     /**
      * Find places nearby the position informed
      *
+     * @param requestId the id for each request
      * @param latitude  the latitude of position
      * @param longitude the longitude of position
      * @param keyword   a text to matching any places's attributes
      * @param rankBy    the order of places
      * @return a {@link Flux} of Places.
      */
-    public Flux<Place> findPlace(Double latitude, Double longitude, String keyword, String rankBy) {
+    public Flux<Place> findPlace(String requestId, Double latitude, Double longitude, String keyword, String rankBy) {
+
+        logger.info("PlaceService#PlaceService requestId={} latitude={} longitude={} keyword={} rankBy={}",
+                requestId, latitude, longitude, keyword, rankBy);
+
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(gk)
                 .build();
@@ -89,12 +94,12 @@ public class PlaceService {
             asyncService.processStatistic(placeList, keyword);
 
             return Flux.fromIterable(placeList);
-        } catch (ApiException e) {
-            logger.error("Error to call Google Maps API", e);
-            return this.findPlaceMongo(latitude, longitude, keyword);
+        } catch (ApiException apiException) {
+            logger.error("PlaceService#findPlace Error to call Google Maps API", apiException);
+            return this.findPlaceMongo(requestId, latitude, longitude, keyword);
         } catch (InterruptedException | IOException e) {
-            logger.error("Error to receive Google Maps API response", e);
-            return this.findPlaceMongo(latitude, longitude, keyword);
+            logger.error("PlaceService#findPlace Error to receive Google Maps API response", e);
+            return this.findPlaceMongo(requestId, latitude, longitude, keyword);
         }
     }
 
@@ -106,14 +111,17 @@ public class PlaceService {
      * @param keyword   the text to matching in attributes.
      * @return a {@link List} of {@link Place}.
      */
-    private Flux<Place> findPlaceMongo(Double latitude, Double longitude, String keyword) {
-        logger.info("Try to find places in database...");
-
+    private Flux<Place> findPlaceMongo(String requestId, Double latitude, Double longitude, String keyword) {
+        logger.info("PlaceService#findPlace finding places in database requestId={} latitude={} longitude={} keyword={}",
+                requestId, latitude, longitude, keyword);
         if (keyword.isEmpty()) {
-            return placeRepository.findByLocationNear(new Point(longitude, latitude), new Distance(1, Metrics.KILOMETERS));
+            return placeRepository.findByLocationNear(
+                    new Point(longitude, latitude),
+                    new Distance(1, Metrics.KILOMETERS));
         } else {
             TextCriteria criteria = TextCriteria.forDefaultLanguage().matchingAny(keyword);
-            return placeRepository.findByLocationNear(new Point(longitude, latitude),
+            return placeRepository.findByLocationNear(
+                    new Point(longitude, latitude),
                     new Distance(1, Metrics.KILOMETERS),
                     criteria);
         }

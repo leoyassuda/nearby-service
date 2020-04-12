@@ -34,7 +34,8 @@ public class AsyncService {
      */
     @Async("threadPoolTaskExecutor")
     public void processPlaces(List<Place> placeList) {
-        logger.info("Process places asynchronously: " + Thread.currentThread().getName());
+        logger.info("AsyncService#processPlaces Process places asynchronously thread={} placeList={}",
+                Thread.currentThread().getName(), placeList);
 
         for (Place place : placeList) {
             Mono<Place> placeDocument = placeRepository.findByPlaceId(place.getPlaceId());
@@ -45,7 +46,8 @@ public class AsyncService {
                         try {
                             placeRepository.save(placeUpdate).subscribe();
                         } catch (DuplicateKeyException e) {
-                            logger.error("Duplicate key error collection: nearby.place index: placeId " + place.getPlaceId());
+                            logger.error("AsyncService#process Places Duplicate key error collection: " +
+                                    "nearby.place index: placeId " + place.getPlaceId());
                         }
                         return Mono.just(placeUpdate);
                     })
@@ -66,7 +68,8 @@ public class AsyncService {
      */
     @Async("threadPoolTaskExecutor")
     public void processStatistic(List<Place> placeList, String keyword) {
-        logger.info("Process statistic asynchronously: " + Thread.currentThread().getName());
+        logger.info("AsyncService#processStatistic Process statistic asynchronously thread={} placeList={} keyword={}",
+                Thread.currentThread().getName(), placeList, keyword);
 
         for (Place place : placeList) {
             StatisticSearched statisticSearched = new StatisticSearched();

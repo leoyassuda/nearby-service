@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
@@ -39,7 +41,7 @@ public class PlaceHandler {
      * @return a list of places.
      */
     public Mono<ServerResponse> findPlace(final ServerRequest serverRequest) {
-        logger.info("Handle request to find places");
+        String requestId = UUID.randomUUID().toString();
 
         PlaceRequestDocument placeRequestDocument = PlaceRequestDocument.toPlaceRequestDocument(serverRequest.queryParams().toSingleValueMap());
 
@@ -50,8 +52,9 @@ public class PlaceHandler {
         validator.validate(placeRequestDocument, errors);
 
         if (errors.getAllErrors().isEmpty()) {
-            return this.placeService.findPlace(new Double(placeRequestDocument.getLatitude()),
-                    new Double(placeRequestDocument.getLongitude()), placeRequestDocument.getKeyword(),
+            return placeService.findPlace(requestId,
+                    Double.parseDouble(placeRequestDocument.getLatitude()),
+                    Double.parseDouble(placeRequestDocument.getLongitude()), placeRequestDocument.getKeyword(),
                     placeRequestDocument.getRankedBy())
                     .collectList()
                     .flatMap(JsonUtils::write)

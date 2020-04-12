@@ -28,8 +28,8 @@ public class StatisticService {
      *
      * @return a {@link Mono} with {@link StatisticAggregate} populated.
      */
-    public Mono<StatisticAggregate> getStatistics() {
-        logger.info("Getting statistics in the last hour.");
+    public Mono<StatisticAggregate> getStatistics(String requestId) {
+        logger.info("StatisticService#getStatistics Getting statistics in the last hour requestId={}", requestId);
 
         StatisticAggregate resultAggregate = statisticRepositoryCustom.getMinDistance();
         StatisticAggregate topPlace = statisticRepositoryCustom.getTopCountPlace();

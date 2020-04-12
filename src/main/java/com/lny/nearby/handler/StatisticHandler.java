@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Component
@@ -22,9 +24,12 @@ public class StatisticHandler {
     private StatisticService statisticService;
 
     public Mono<ServerResponse> getStatistics(final ServerRequest serverRequest) {
-        logger.info("Handle request to get statistics in the last hour");
 
-        return this.statisticService.getStatistics()
+        String requestId = UUID.randomUUID().toString();
+
+        logger.info("StatisticHandler#getStatistics Handle request to get statistics in the last hour requestId={}", requestId);
+
+        return this.statisticService.getStatistics(requestId)
                 .flatMap((json) -> ServerResponse.ok()
                         .body(Mono.just(json), StatisticAggregate.class)
                 ).onErrorResume(

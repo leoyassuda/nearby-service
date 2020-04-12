@@ -1,7 +1,10 @@
 package com.lny.nearby.validator;
 
 import com.lny.nearby.document.PlaceRequestDocument;
+import com.lny.nearby.service.PlaceService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -11,6 +14,8 @@ import org.springframework.validation.Validator;
  */
 public class PlaceRequestValidator implements Validator {
 
+    private static final Logger logger = LoggerFactory.getLogger(PlaceRequestValidator.class);
+
     @Override
     public boolean supports(Class<?> aClass) {
         return PlaceRequestDocument.class.isAssignableFrom(aClass);
@@ -18,6 +23,7 @@ public class PlaceRequestValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "latitude", "field.required");
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "longitude", "field.required");
